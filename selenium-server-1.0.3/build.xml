@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><project default="create_run_jar" name="Create Runnable Jar for Project selenium-server-1.0.3">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="/home/shauvik/www/selenium_water.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="org.openqa.selenium.server.SeleniumServer"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <zipfileset excludes="META-INF/*.SF" src="/home/shauvik/workspaces/webtest/selenium-server-1.0.3/lib/selenium-server.jar"/>
+            <fileset dir="/home/shauvik/workspaces/webtest/selenium-server-1.0.3/bin"/>
+        </jar>
+    </target>
+</project>

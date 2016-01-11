@@ -1,0 +1,13 @@
+
+Recording:
+----------
+1. Start SeleniumServer (project selenium-server uses WaterRecorder from project Water)
+   - changed files: SeleniumDriverResourceHandler.java to user WaterRecorder
+
+2. Run SeleniumHTMLDriver (project Water uses project selenium-client)
+
+
+
+Repairing:
+----------
+1. Run WaterRepair 

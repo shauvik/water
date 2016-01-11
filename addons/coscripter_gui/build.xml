@@ -1,0 +1,85 @@
+<?xml version="1.0"?> 
+  <project name="yule" default="createxpi">
+
+	<!-- first we'll define some helpful variables --> 
+	<property name="my.version" value="1.2.4"/>
+	<property name="my.name" value="yule" />
+	<property name="my.deploy.dir" value="/var/www/coscripter/download/yule" />
+	<property name="my.deploy.host" value="coscripter.researchlabs.ibm.com" />
+
+	<target name="createxpi" depends="clean,new-version">
+	    <zip destfile="${my.name}.xpi" >
+	      <zipfileset dir="." includes="build.xml,chrome.manifest,components/,content/,install.rdf"/>
+	    </zip>
+	</target>
+	
+	<target name="deploy" depends="createxpi">
+		<!-- copy the files to the deploy host and dir appending the version number -->
+		
+		
+		<!-- copy the xpi -->
+		<scp 
+			file="${my.name}.xpi" 
+			keyfile="${user.home}/.ssh/id_rsa"
+			passphrase=""
+			todir="root@${my.deploy.host}:${my.deploy.dir}/${my.name}-${my.version}.xpi"/>
+		<!-- copy the update.rdf  -->
+		<scp 
+			file="update.rdf" 
+			keyfile="${user.home}/.ssh/id_rsa"
+			passphrase=""
+			todir="root@${my.deploy.host}:${my.deploy.dir}/update-${my.version}.rdf"/>
+
+		<!-- sym linking the most recent version to the default files  -->
+		<!-- symlink the xpi  -->
+		<sshexec host="${my.deploy.host}"
+			username="root"
+			keyfile="${user.home}/.ssh/id_rsa"
+			passphrase=""
+			command="ln -sf ${my.deploy.dir}/${my.name}-${my.version}.xpi ${my.deploy.dir}/${my.name}.xpi"/>
+		<!-- symlink the update.rdf  -->
+		<sshexec host="${my.deploy.host}"
+			username="root"
+			keyfile="${user.home}/.ssh/id_rsa"
+			passphrase=""
+			command="ln -sf ${my.deploy.dir}/update-${my.version}.rdf ${my.deploy.dir}/update.rdf"/>
+
+		<!-- making sure all files are readable (chmod 644)  -->
+		<sshexec host="${my.deploy.host}"
+			username="root"
+			keyfile="${user.home}/.ssh/id_rsa"
+			passphrase=""
+			command="chmod 644 ${my.deploy.dir}/*"/>
+
+	</target>
+
+	<target name="new-version">
+		<!-- push the current version into the install.rdf update.rdf and extra/install.rdf files  -->
+		<!-- update the updatelink property in update.rdf to point to the newest version  -->
+		<replaceregexp
+			file="install.rdf"
+			match="&lt;em:version&gt;(.*)&lt;/em:version&gt;"
+			replace="&lt;em:version&gt;${my.version}&lt;/em:version&gt;"
+				flags="g" />
+
+		<replaceregexp
+			file="update.rdf"
+			match="&lt;updateLink&gt;https://${my.deploy.host}/download/${my.name}/${my.name}(.*).xpi&lt;/updateLink&gt;"
+			replace="&lt;updateLink&gt;https://${my.deploy.host}/download/${my.name}/${my.name}-${my.version}.xpi&lt;/updateLink&gt;"
+			flags="g" />
+		<replaceregexp
+			file="update.rdf"
+			match="&lt;version&gt;(.*)&lt;/version&gt;"
+			replace="&lt;version&gt;${my.version}&lt;/version&gt;"
+			flags="g" />
+	</target>
+
+	<target name="clean">
+		<delete>
+			<fileset dir="${basedir}" includes="yule.xpi"/>
+		</delete>
+	</target>
+	
+
+</project>
+

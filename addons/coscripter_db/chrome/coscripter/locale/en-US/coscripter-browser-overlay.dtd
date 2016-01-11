@@ -1,0 +1,5 @@
+<!ENTITY coscripter.label "CoScripter">
+<!ENTITY coscripterMenuItem.accesskey "c">
+<!ENTITY coscripterMenuItem.accesskeylabel "Ctrl+Alt+C">
+<!ENTITY toggleCoScripterSidebar "Toggle CoScripter sidebar">
+<!ENTITY extractScript "Import instructions into CoScripter">
